@@ -2,7 +2,13 @@ import Utils.*
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-inThisBuild(List(organization := "dev.toniogela", scalaVersion := "3.3.1"))
+inThisBuild(List(
+  organization      := "dev.toniogela",
+  scalaVersion      := "3.3.1",
+  semanticdbEnabled := true,
+  scalafixOnCompile := true,
+  scalafmtOnCompile := true
+))
 
 lazy val root = project.root(
   domain,
@@ -18,7 +24,7 @@ lazy val domain = crossProject(
   libraryDependencies := List("io.circe" %%% "circe-core" % "0.14.6")
 )
 
-lazy val backend = project.jvmDocker.in(file("modules/backend")).settings(
+lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domain.jvm).settings(
   name       := "conservami-backend",
   run / fork := true,
   // Compile / resourceGenerators += copyJsToAssets(frontend),
