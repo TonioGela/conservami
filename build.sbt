@@ -35,7 +35,7 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
     "org.typelevel"       %%% "log4cats-slf4j"      % "2.6.0",
     "ch.qos.logback"        % "logback-classic"     % "1.4.14",
     "org.tpolecat"        %%% "skunk-core"          % "0.6.2",
-    "com.github.geirolz"   %% "fly4s-core"          % "0.0.20",
+    "com.github.geirolz"   %% "fly4s-core"          % "1.0.0",
     "com.disneystreaming" %%% "weaver-cats"         % "0.8.3"     % Test,
     "com.disneystreaming" %%% "weaver-scalacheck"   % "0.8.3"     % Test,
     "org.http4s"          %%% "http4s-ember-client" % "1.0.0-M40" % Test,
