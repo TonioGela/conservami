@@ -5,6 +5,11 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.*
 import com.typesafe.sbt.packager.docker.DockerPlugin
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.*
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
+import sbtbuildinfo.BuildInfoPlugin
+import sbtbuildinfo.BuildInfoKeys.*
+import sbtbuildinfo.BuildInfoKey
+import _root_.io.github.sbt.tzdb.TzdbPlugin
+import _root_.io.github.sbt.tzdb.TzdbPlugin.autoImport.zonesFilter
 
 object Utils {
 
@@ -37,13 +42,21 @@ object Utils {
     def root(c: CompositeProject*): Project = project.in(file("."))
       .aggregate(c.flatMap(_.componentProjects).map(_.project): _*)
 
-    def jsEsProject: Project = project.enablePlugins(ScalaJSPlugin)
-      .settings(scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) })
+    def jsEsProject: Project = project.enablePlugins(ScalaJSPlugin).enablePlugins(BuildInfoPlugin)
+      .enablePlugins(TzdbPlugin).settings(
+        scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
+        buildInfoKeys := List(
+          BuildInfoKey
+            .action("host")(if (isRelease) "https://conservami.org" else "http://localhost:8080")
+        ),
+        zonesFilter   := { (z: String) => z == "Europe/Rome" }
+      )
 
     def jvmDocker: Project = project.enablePlugins(DockerPlugin, JavaAppPackaging).settings(
       dockerBaseImage    := "eclipse-temurin:17-jre",
       dockerExposedPorts := 8080 :: Nil,
-      dockerExecCommand  := "podman" :: Nil
+      dockerExecCommand  := "podman" :: Nil,
+      dockerBuildOptions ++= List("--platform", "linux/amd64")
     )
   }
 
