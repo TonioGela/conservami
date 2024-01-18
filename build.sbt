@@ -21,7 +21,8 @@ lazy val domain = crossProject(
   // JSPlatform
 ).crossType(CrossType.Pure).in(file("modules/domain")).settings(
   name                := "conservami-domain",
-  libraryDependencies := List("io.circe" %%% "circe-core" % "0.14.6")
+  libraryDependencies :=
+    List("io.circe" %%% "circe-core" % "0.14.6", "io.circe" %%% "circe-refined" % "0.14.6")
 )
 
 lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domain.jvm).settings(
