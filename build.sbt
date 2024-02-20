@@ -40,7 +40,7 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
     "com.github.geirolz"   %% "fly4s"                      % "1.0.0",
     "org.flywaydb"          % "flyway-database-postgresql" % "10.6.0",
     "org.postgresql"        % "postgresql"                 % "42.7.1",
-    "com.github.librepdf"   % "openpdf"                    % "1.3.33",
+    "com.github.librepdf"   % "openpdf"                    % "1.3.40",
     "com.disneystreaming" %%% "weaver-cats"                % "0.8.4"   % Test,
     "com.disneystreaming" %%% "weaver-scalacheck"          % "0.8.4"   % Test,
     "org.http4s"          %%% "http4s-ember-client"        % "0.23.25" % Test,
