@@ -38,9 +38,9 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
     "ch.qos.logback"        % "logback-classic"            % "1.5.0",
     "org.tpolecat"        %%% "skunk-core"                 % "0.6.2",
     "com.github.geirolz"   %% "fly4s"                      % "1.0.0",
-    "org.flywaydb"          % "flyway-database-postgresql" % "10.6.0",
+    "org.flywaydb"          % "flyway-database-postgresql" % "10.8.1",
     "org.postgresql"        % "postgresql"                 % "42.7.2",
-    "com.github.librepdf"   % "openpdf"                    % "1.3.33",
+    "com.github.librepdf"   % "openpdf"                    % "1.3.41",
     "com.disneystreaming" %%% "weaver-cats"                % "0.8.4"   % Test,
     "com.disneystreaming" %%% "weaver-scalacheck"          % "0.8.4"   % Test,
     "org.http4s"          %%% "http4s-ember-client"        % "0.23.25" % Test,
@@ -52,7 +52,7 @@ lazy val frontend = project.jsEsProject.in(file("modules/frontend")).dependsOn(d
   name                                      := "conservami-frontend",
   libraryDependencies                       := List(
     "io.indigoengine"   %%% "tyrian-io"       % "0.10.0",
-    "io.github.cquiroz" %%% "scala-java-time" % "2.4.0",
+    "io.github.cquiroz" %%% "scala-java-time" % "2.5.0",
     "io.circe"          %%% "circe-parser"    % "0.14.6",
     "com.armanbilge"    %%% "fs2-dom"         % "0.2.1"
   ),
