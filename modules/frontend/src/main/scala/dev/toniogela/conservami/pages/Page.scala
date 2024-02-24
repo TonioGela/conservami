@@ -10,7 +10,7 @@ abstract class Page {
   val url: String
   def initCommand: Cmd[IO, Page.Msg]
   def update(msg: Page.Msg): (Page, Cmd[IO, Page.Msg])
-  def view: Html[Page.Msg]
+  def view: Html[Page.Msg] | List[Html[Page.Msg]]
 
   def andNone: (Page, Cmd[IO, Page.Msg]) = (this, Cmd.None)
 }

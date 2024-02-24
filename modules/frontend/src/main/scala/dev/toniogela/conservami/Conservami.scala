@@ -25,8 +25,14 @@ object Conservami extends TyrianIOApp[State.Msg, State.Model]:
     (State.Model(page), page.initCommand)
   }
 
-  override def view(model: State.Model): Html[State.Msg] =
-    div(Header.view, tyrian.Html.main(`class` := "page-container")(model.page.view))
+  override def view(model: State.Model): Html[State.Msg] = div(
+    Header.view,
+    model.page.view match
+      case h: Html[Page.Msg]        => tyrian.Html
+          .main(`class` := "page-container container")(div(`class` := "col")(h))
+      case hs: List[Html[Page.Msg]] => tyrian.Html
+          .main(`class` := "page-container container")(div(`class` := "col")(hs*))
+  )
 
   override def router: Location => State.Msg =
     case l: Location.Internal => Page.NavigateToInternal(Page.get(l.locationDetails.pathName))

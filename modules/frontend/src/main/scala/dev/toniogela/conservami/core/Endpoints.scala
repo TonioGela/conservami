@@ -82,4 +82,21 @@ object Endpoint {
       e => IndividualUserPage.UserRetriveFailure(e.toString)
     )
 
+  def searchUsers(queryS: String): Endpoint[UserListPage.Msg, Unit] =
+    Endpoint[UserListPage.Msg, Unit](
+      s"/user/search/$queryS",
+      Method.Get,
+      r =>
+        if r.status.code === 200 then
+          decode[List[UserView]](r.body).fold(
+            e =>
+              UserListPage.UsersRetriveFailure(
+                s"Risposta del server non deserializzabile: ${r.body} \n Errore: ${e.toString}"
+              ),
+            UserListPage.UsersRetriveSuccess(_)
+          )
+        else UserListPage.UsersRetriveFailure(s"Errore: $r.status.code"),
+      e => UserListPage.UsersRetriveFailure(e.toString)
+    )
+
 }

@@ -12,8 +12,10 @@ import cats.effect.Concurrent
 import cats.Applicative
 import cats.effect.kernel.Resource
 import cats.ApplicativeThrow
+import cats.effect.std.Console
 
 trait UserRepo[F[_]] {
+  def search(string: String): F[List[User]]
   def addUser(user: PersistenceUserAdd): F[Unit]
   def alterUser(id: UUID, user: PersistenceUserAdd): F[Unit]
   def getAllUsers(): F[List[User]]
@@ -24,10 +26,28 @@ trait UserRepo[F[_]] {
   def getPdf(id: UUID): F[Option[Array[Byte]]]
 }
 
-class DatabaseUserRepo[F[_]: Monad: Concurrent](sessions: Resource[F, Session[F]])
+class DatabaseUserRepo[F[_]: Monad: Concurrent: Console](sessions: Resource[F, Session[F]])
     extends UserRepo[F]:
 
   import DatabaseUserRepo.*
+
+  override def search(queryS: String): F[List[User]] = {
+    val likeId          = sql"WHERE lower(cast(id as text)) like $varchar"
+    val likeName        = sql" OR lower(name) like $varchar"
+    val likeSurname     = sql" OR lower(surname) like $varchar"
+    val likeFiscalCode  = sql" OR lower(fiscalCode) like $varchar"
+    val likeEmail       = sql" OR lower(email) like $varchar"
+    val likePhoneNumber = sql" OR lower(phoneNumber) like $varchar"
+
+    val combinedWhere: Fragment[String] =
+      (likeId *: likeName *: likeSurname *: likeFiscalCode *: likeEmail *: likePhoneNumber)
+        .contramap((s: String) => (s, s, s, s, s, s))
+
+    val query: Query[String, User] = sql"SELECT * FROM conservami.users $combinedWhere"
+      .query(userCodec)
+
+    retry(2)(sessions.use(_.execute(query)(s"%${queryS.toLowerCase}%")))
+  }
 
   override def addUser(userAdd: PersistenceUserAdd): F[Unit] = {
     val query: Command[PersistenceUserAdd] =
@@ -56,7 +76,7 @@ class DatabaseUserRepo[F[_]: Monad: Concurrent](sessions: Resource[F, Session[F]
               pdfDocument = $bytea
             WHERE id = $uuid""".command
 
-    val query = tupledQuery.contramap { case u: User =>
+    val query: Command[User] = tupledQuery.contramap { case u: User =>
       val generic = Tuple.fromProductTyped(u)
       generic.tail :* generic.head
     }
@@ -125,5 +145,6 @@ object DatabaseUserRepo:
       phoneNumber *: email *: varchar(100).opt *: date *: varchar(100) *:
       int8.imap(_.toInt)(_.toLong) *: bytea).to[PersistenceUserAdd]
 
-  def apply[F[_]: Monad: Concurrent](sessions: Resource[F, Session[F]]): F[DatabaseUserRepo[F]] =
-    Applicative[F].pure(new DatabaseUserRepo[F](sessions))
+  def apply[F[_]: Monad: Concurrent: Console](
+      sessions: Resource[F, Session[F]]
+  ): F[DatabaseUserRepo[F]] = Applicative[F].pure(new DatabaseUserRepo[F](sessions))

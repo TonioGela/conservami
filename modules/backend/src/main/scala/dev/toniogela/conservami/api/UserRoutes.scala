@@ -22,6 +22,7 @@ class UserRoutes[F[_]: Async: Console](userRepo: UserRepo[F]) extends Http4sDsl[
 
   val retrievalRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root                                       => userRepo.getAllUsers().ok
+    case GET -> Root / "search" / query                    => userRepo.search(query).ok
     case GET -> Root / "name" / name                       => userRepo.getUsersByName(name).ok
     case GET -> Root / "surname" / surname                 => userRepo.getUsersBySurname(surname).ok
     case GET -> Root / "name" / name / "surname" / surname => userRepo

@@ -3,34 +3,8 @@
     padding: 0;
 }
 
-.nav-link {
-    color: red;
-}
-
-.header-container {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid black;
-}
-
-.header-nav {
-    margin-left: auto;
-}
-
-.header-links {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.nav-item {
-    padding: 10px;
-    list-style: none;
-}
-
-.home-logo {
-    height: 50px;
-    padding: 5px;
+.rounded-corners {
+    border-radius: .5rem;
 }
 
 .page-container {
@@ -38,26 +12,4 @@
     justify-content: center;
     width: 100%;
     margin-top: 20px;
-}
-
-.users-table {
-    border-collapse: collapse;
-}
-
-.table-header {
-    font-weight: bold;
-}
-
-.table-row {
-    border-bottom: 1px solid #ddd;
-}
-
-.table-row:hover {
-    background-color: #D6EEEE;
-}
-
-th,
-td {
-    text-align: left;
-    padding: 8px;
 }
