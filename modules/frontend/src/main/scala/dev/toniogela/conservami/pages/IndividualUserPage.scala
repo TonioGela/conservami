@@ -29,37 +29,74 @@ final case class IndividualUserPage(
   override def view: Html[Page.Msg] = state.fold(
     div(_),
     uv =>
-      div(
-        table(`class` := "table")(
-          thead(tr(th(uv.name), th(uv.surname))),
-          tbody(
-            tr(th("Tessera #"), td(uv.membershipCardNumber)),
-            tr(th("Email"), td(uv.email.value)),
-            tr(th("Telefono"), td(uv.phoneNumber.value)),
-            tr(th("Codice Fiscale"), td(uv.fiscalCode.value)),
-            tr(th("Residenza"), td(uv.residence)),
-            tr(
-              th("Membro dal: "),
-              td(uv.memberSince.format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
+      div(`class` := "container")(div(`class` := "row")(
+        div(`class` := "col-lg-4")(div(`class` := "card text-bg-primary mb-3")(
+          div(`class` := "card-body")(
+            h3(`class` := "card-title")(s"${uv.name} ${uv.surname}"),
+            p(`class` := "card-text")(s"Tessera: ${uv.membershipCardNumber}")
+          ),
+          ul(`class` := "list-group list-group-flush")(
+            li(`class` := "list-group-item")(
+              text("Email: "),
+              a(href := s"mailto:${uv.email.value}")(uv.email.value)
             ),
-            tr(
-              th("Data di Nascita"),
-              td(uv.birthDate.format(DateTimeFormatter.ofPattern("dd/MM/yyy")))
-            ),
-            tr(th("Luogo di Nascita"), td(uv.birthPlace)),
-            tr(th("Professione"), td(uv.profession.orEmpty)),
-            tr(th("Donazione"), td(s"${uv.donation.toString} €"))
+            li(`class` := "list-group-item")(
+              text("Telefono: "),
+              a(href := s"tel:${uv.phoneNumber.value}")(uv.phoneNumber.value)
+            )
           )
-        ),
-        `object`(
-          data    := s"/api/user/$userId/pdf",
-          `type`  := "application/pdf",
-          width   := "100%",
-          `style` := "min-width:500px;",
-          height  := "500px"
-        )(p("Impossibile mostrare il PDF in pagina"), a(href := s"/user/$userId/pdf")("Scaricalo."))
-      )
+        )), // TODO! Bottoni modifica ed elimina qui sotto la card
+        div(`class` := "col-lg-8")(
+          div(`class` := "card mb-3")(
+            div(`class` := "card-body")(h4(`class` := "card-title mb-0")("Dati")),
+            ul(`class` := "list-group list-group-flush")(
+              li(`class` := "list-group-item")(
+                s"Socio/a dal: ${uv.memberSince.format(DateTimeFormatter.ofPattern("dd/MM/yyy"))}"
+              ),
+              li(`class` := "list-group-item")(s"Donazione: ${uv.donation} €"),
+              li(`class` := "list-group-item")(
+                s"Professione: ${uv.profession.getOrElse("Non specificata")}"
+              ),
+              li(`class` := "list-group-item")(s"Codice Fiscale: ${uv.fiscalCode.value}"),
+              li(`class` := "list-group-item")(
+                s"Data di Nascita: ${uv.birthDate.format(DateTimeFormatter.ofPattern("dd/MM/yyy"))}"
+              ),
+              li(`class` := "list-group-item")(s"Residenza: ${uv.residence}")
+            )
+          ),
+          div(`class` := "card mb-3")(
+            div(`class` := "card-body")(h4(`class` := "card-title mb-0")("Documenti")),
+            div(`class` := "accordion accordion-flush m-1", id := "documentAccordion")(
+              div(`class` := "accordion-item")(h2(`class` := "accordion-header")(
+                button(
+                  `class` := "accordion-button",
+                  `type`  := "button",
+                  Attribute("data-bs-toggle", "collapse"),
+                  Attribute("data-bs-target", "#collapseOne")
+                )("Modulo Iscrizione"),
+                div(
+                  id      := "collapseOne",
+                  `class` := "accordion-collapse collapse",
+                  Attribute("data-bs-parent", "#accordionExample")
+                )(div(`class` := "accordion-body")(
+                  `object`(
+                    data    := s"/api/user/$userId/pdf",
+                    `type`  := "application/pdf",
+                    width   := "100%",
+                    `style` := "min-width:500px;",
+                    height  := "500px"
+                  )(
+                    p("Impossibile mostrare il PDF in pagina"),
+                    a(href := s"/user/$userId/pdf")("Scaricalo.")
+                  )
+                ))
+              ))
+            )
+          )
+        )
+      ))
   )
+
 }
 
 object IndividualUserPage:
