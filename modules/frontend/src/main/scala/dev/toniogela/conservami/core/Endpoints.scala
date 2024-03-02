@@ -9,11 +9,13 @@ import io.circe.syntax.*
 import cats.effect.kernel.Async
 import dev.toniogela.conservami.pages.CreateUserPage
 import dev.toniogela.conservami.UserAdd
-import dev.toniogela.conservami.pages.CreateUserPage.Msg
 import dev.toniogela.conservami.UserView
 import dev.toniogela.conservami.pages.UserListPage
 import io.circe.parser.*
 import dev.toniogela.conservami.pages.IndividualUserPage
+import dev.toniogela.conservami.pages.Page
+import dev.toniogela.conservami.pages.Page.InternalRedirect
+import java.util.UUID
 
 trait Endpoint[M, A: Encoder] private (
     val partialUrl: String,
@@ -37,7 +39,7 @@ object Endpoint {
       onFailure: HttpError => M
   ) = new Endpoint[M, A](partialUrl, method, onSuccess, onFailure) {}
 
-  val createUser: Endpoint[Msg, UserAdd] = Endpoint[CreateUserPage.Msg, UserAdd](
+  val createUser: Endpoint[CreateUserPage.Msg, UserAdd] = Endpoint[CreateUserPage.Msg, UserAdd](
     "/user",
     Method.Post,
     r =>
@@ -48,6 +50,18 @@ object Endpoint {
       },
     e => CreateUserPage.UserCreationError(e.toString)
   )
+
+  def alterUser(id: UUID): Endpoint[CreateUserPage.Msg, UserAdd] =
+    Endpoint[CreateUserPage.Msg, UserAdd](
+      s"/user/${id.toString}",
+      Method.Put,
+      r =>
+        r.status.code match {
+          case 200 => CreateUserPage.UserCreated
+          case x   => CreateUserPage.UserCreationError(s"Errore $x")
+        },
+      e => CreateUserPage.UserCreationError(e.toString)
+    )
 
   val getUsers: Endpoint[UserListPage.Msg, Unit] = Endpoint[UserListPage.Msg, Unit](
     "/user",
@@ -81,6 +95,15 @@ object Endpoint {
         else IndividualUserPage.UserRetriveFailure(s"Errore: $r.status.code"),
       e => IndividualUserPage.UserRetriveFailure(e.toString)
     )
+
+  def deleteUser(id: UUID): Endpoint[Page.Msg, Unit] = Endpoint[Page.Msg, Unit](
+    s"/user/${id.toString}",
+    Method.Delete,
+    r =>
+      if r.status.code === 202 then InternalRedirect(UserListPage())
+      else IndividualUserPage.UserDeletionError(s"Ricevuto status code: $r.status.code"),
+    e => IndividualUserPage.UserDeletionError(e.toString)
+  )
 
   def searchUsers(queryS: String): Endpoint[UserListPage.Msg, Unit] =
     Endpoint[UserListPage.Msg, Unit](

@@ -8,19 +8,24 @@ import dev.toniogela.conservami.*
 
 trait FormField[T, M, X](kind: String, uid: String, name: String, message: String => M) {
   def validation: T => Either[String, X]
+  def stringify: X => String
 
   def render(t: T): Html[M] = {
 
-    val (inputClass, errorDiv) = validation(t).fold(
-      e => ("form-control is-invalid", div(`class` := "form-text")(e)),
-      _ => ("form-control is-valid", div(`class` := "form-text")())
+    val (inputClassAndValue, errorDiv) = validation(t).fold(
+      e => (List(`class` := "form-control is-invalid"), div(`class` := "form-text")(e)),
+      x =>
+        (
+          List(`class` := "form-control is-valid", value := stringify(x)),
+          div(`class` := "form-text")()
+        )
     )
 
     val inputAttributes: List[Attr[M]] = {
-      val default = List(`class` := inputClass, id := uid, onInput(message))
+      val default = (id := uid) :: onInput(message) :: inputClassAndValue
       kind match {
-        case "number" => (`type` := kind) :: (min     := 0) :: (value := "0") :: default
-        case "money"  => (`type` := "number") :: (min := 0) :: (value := "0") :: default
+        case "number" => (`type` := kind) :: (min     := 0) :: default
+        case "money"  => (`type` := "number") :: (min := 0) :: default
         case x        => (`type` := x) :: default
       }
     }
@@ -40,12 +45,14 @@ trait FormField[T, M, X](kind: String, uid: String, name: String, message: Strin
 
 case class StringField[M](uid: String, name: String)(message: String => M)
     extends FormField[Option[String], M, Option[String]]("text", uid, name, message) {
-
+  def stringify: Option[String] => String                          = _.getOrElse("")
   def validation: Option[String] => Either[String, Option[String]] = _.asRight[String]
 }
 
 case class NonEmptyStringField[M](uid: String, name: String)(message: String => M)
     extends FormField[String, M, String]("text", uid, name, message) {
+
+  def stringify: String => String = identity
 
   def validation: String => Either[String, String] =
     s => Either.cond(!s.isBlank, s.trim, s"Il campo $name non puo essere vuoto")
@@ -53,6 +60,7 @@ case class NonEmptyStringField[M](uid: String, name: String)(message: String => 
 
 case class PositiveNumberField[M](uid: String, name: String)(message: String => M)
     extends FormField[String, M, Int]("number", uid, name, message) {
+  def stringify: Int => String = _.toString
 
   def validation: String => Either[String, Int] =
     s => s.toIntOption.filter(_ >= 0).toRight(s"Il campo $name deve essere un numero non negativo")
@@ -60,6 +68,8 @@ case class PositiveNumberField[M](uid: String, name: String)(message: String => 
 
 case class DateField[M](uid: String, name: String)(message: String => M)
     extends FormField[String, M, LocalDate]("date", uid, name, message) {
+
+  def stringify: LocalDate => String = _.format(dateTimeFormat)
 
   def validation: String => Either[String, LocalDate] = s =>
     Either.catchNonFatal(LocalDate.parse(s, dateTimeFormat))
@@ -69,17 +79,23 @@ case class DateField[M](uid: String, name: String)(message: String => M)
 case class FiscalCodeField[M](uid: String, name: String)(message: String => M)
     extends FormField[String, M, ItalianFiscalCode]("text", uid, name, message) {
 
+  def stringify: ItalianFiscalCode => String = _.value
+
   def validation: String => Either[String, ItalianFiscalCode] = ItalianFiscalCode.from
 }
 
 case class PhoneNumberField[M](uid: String, name: String)(message: String => M)
     extends FormField[String, M, PhoneNumber]("text", uid, name, message) {
 
+  def stringify: PhoneNumber => String = _.value
+
   def validation: String => Either[String, PhoneNumber] = PhoneNumber.from
 }
 
 case class EmailField[M](uid: String, name: String)(message: String => M)
     extends FormField[String, M, Email]("email", uid, name, message) {
+
+  def stringify: Email => String = _.value
 
   def validation: String => Either[String, Email] = Email.from
 }

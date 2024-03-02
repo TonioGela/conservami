@@ -52,6 +52,11 @@ class UserRoutes[F[_]: Async: Console](userRepo: UserRepo[F]) extends Http4sDsl[
         }
       yield resp // TODO! ritorna userId
 
+    case DELETE -> Root / UUIDVar(id) => userRepo.getUserById(id).flatMap {
+        case None => NotFound()
+        case _    => userRepo.deleteUser(id) >> Accepted()
+      }
+
     case req @ PUT -> Root / UUIDVar(id) => req.as[UserAdd].flatMap { user =>
         userRepo.getUserById(id).flatMap {
           case None    => NotFound()

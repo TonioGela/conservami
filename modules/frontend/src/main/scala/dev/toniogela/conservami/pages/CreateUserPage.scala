@@ -8,8 +8,11 @@ import dev.toniogela.conservami.*
 import dev.toniogela.conservami.core.*
 import dev.toniogela.conservami.pages.Page.*
 import dev.toniogela.conservami.pages.CreateUserPage.*
+import java.util.UUID
 
+//TODO! I can use a card maybe
 final case class CreateUserPage(
+    id: Option[UUID] = None,
     username: String = "",
     surname: String = "",
     birthPlace: String = "",
@@ -58,7 +61,10 @@ final case class CreateUserPage(
         donazione.validation(donation)
       ).mapN(UserAdd.apply).fold(
         error => (this.copy(error = error.some), Cmd.None),
-        userAdd => (this, Endpoint.createUser(userAdd))
+        userAdd =>
+          id.fold((this, Endpoint.createUser[IO](userAdd)))(uuid =>
+            (this, Endpoint.alterUser(uuid)[IO](userAdd))
+          )
       )
 
     case UserCreated          =>
@@ -86,17 +92,7 @@ final case class CreateUserPage(
 
   override def view: Html[Page.Msg] = div(`class` := "form-section")(div(`class` := "top-section")(
     h1("Crea socio"),
-    form(
-      name    := "create-user",
-      `class` := "form",
-      onEvent(
-        "submit",
-        e => {
-          e.preventDefault()
-          NoOp
-        }
-      )
-    )(fields*)
+    form(name := "create-user", `class` := "form", onSubmit(NoOp))(fields*)
   ))
 
 }

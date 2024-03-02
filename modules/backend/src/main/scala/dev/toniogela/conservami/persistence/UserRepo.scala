@@ -17,6 +17,7 @@ import cats.effect.std.Console
 trait UserRepo[F[_]] {
   def search(string: String): F[List[User]]
   def addUser(user: PersistenceUserAdd): F[Unit]
+  def deleteUser(id: UUID): F[Unit]
   def alterUser(id: UUID, user: PersistenceUserAdd): F[Unit]
   def getAllUsers(): F[List[User]]
   def getUserById(id: UUID): F[Option[User]]
@@ -51,11 +52,18 @@ class DatabaseUserRepo[F[_]: Monad: Concurrent: Console](sessions: Resource[F, S
 
   override def addUser(userAdd: PersistenceUserAdd): F[Unit] = {
     val query: Command[PersistenceUserAdd] =
+      // https://stackoverflow.com/questions/2944297/postgresql-function-for-last-inserted-id
+      // Add RETURNING
       sql"INSERT INTO conservami.users VALUES (gen_random_uuid(), $userAddCodec)".command
 
-    // TODO should we automatically enforce (lower(name), lower(surname)) uniqueness?
+    // TODO should we automatically enforce (lower(name), lower(surname)) uniqueness
 
     retry(2)(sessions.flatMap(_.prepareR(query)).use(_.execute(userAdd).void))
+  }
+
+  override def deleteUser(id: UUID): F[Unit] = {
+    val query: Command[UUID] = sql"DELETE FROM conservami.users where id = $uuid".command
+    retry(2)(sessions.flatMap(_.prepareR(query)).use(_.execute(id).void))
   }
 
   override def alterUser(id: UUID, userAdd: PersistenceUserAdd): F[Unit] = {

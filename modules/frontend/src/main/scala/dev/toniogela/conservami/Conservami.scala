@@ -36,7 +36,6 @@ object Conservami extends TyrianIOApp[State.Msg, State.Model]:
 
   override def router: Location => State.Msg =
     case l: Location.Internal => Page.NavigateToInternal(Page.get(l.locationDetails.pathName))
-
     case l: Location.External => Page.NavigateToExternal(l.locationDetails.pathName)
 
   override def subscriptions(model: State.Model): Sub[IO, State.Msg] = Sub.None
