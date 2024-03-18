@@ -28,8 +28,8 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
   Compile / resourceGenerators += copyJsToAssets(frontend),
   libraryDependencies ++= List(
     "org.typelevel"       %%% "cats-effect"                % "3.5.3",
-    "co.fs2"              %%% "fs2-core"                   % "3.9.4",
-    "co.fs2"              %%% "fs2-io"                     % "3.9.4",
+    "co.fs2"              %%% "fs2-core"                   % "3.10.0",
+    "co.fs2"              %%% "fs2-io"                     % "3.10.0",
     "com.monovore"        %%% "decline-effect"             % "2.4.1",
     "org.http4s"          %%% "http4s-ember-server"        % "0.23.25",
     "org.http4s"          %%% "http4s-dsl"                 % "0.23.25",
