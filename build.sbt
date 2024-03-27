@@ -4,7 +4,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 inThisBuild(List(
   organization      := "dev.toniogela",
-  scalaVersion      := "3.4.0",
+  scalaVersion      := "3.4.1",
   semanticdbEnabled := true,
   scalafixOnCompile := true,
   scalafmtOnCompile := true
