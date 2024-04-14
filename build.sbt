@@ -51,7 +51,7 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
 lazy val frontend = project.jsEsProject.in(file("modules/frontend")).dependsOn(domain.js).settings(
   name                                      := "conservami-frontend",
   libraryDependencies                       := List(
-    "io.indigoengine"   %%% "tyrian-io"       % "0.10.0",
+    "io.indigoengine"   %%% "tyrian-io"       % "0.11.0",
     "io.github.cquiroz" %%% "scala-java-time" % "2.5.0",
     "io.circe"          %%% "circe-parser"    % "0.14.6",
     "com.armanbilge"    %%% "fs2-dom"         % "0.2.1"
