@@ -16,8 +16,8 @@ lazy val domain = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure
   .in(file("modules/domain")).settings(
     name                := "conservami-domain",
     libraryDependencies := List(
-      "io.circe"          %%% "circe-core"    % "0.14.6",
-      "io.circe"          %%% "circe-refined" % "0.14.6",
+      "io.circe"          %%% "circe-core"    % "0.14.7",
+      "io.circe"          %%% "circe-refined" % "0.14.7",
       "io.github.arainko" %%% "ducktape"      % "0.2.0"
     )
   )
@@ -53,7 +53,7 @@ lazy val frontend = project.jsEsProject.in(file("modules/frontend")).dependsOn(d
   libraryDependencies                       := List(
     "io.indigoengine"   %%% "tyrian-io"       % "0.11.0",
     "io.github.cquiroz" %%% "scala-java-time" % "2.5.0",
-    "io.circe"          %%% "circe-parser"    % "0.14.6",
+    "io.circe"          %%% "circe-parser"    % "0.14.7",
     "com.armanbilge"    %%% "fs2-dom"         % "0.2.1"
   ),
   Compile / scalaJSUseMainModuleInitializer := true,
