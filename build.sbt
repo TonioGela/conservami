@@ -31,9 +31,9 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
     "co.fs2"              %%% "fs2-core"                   % "3.10.2",
     "co.fs2"              %%% "fs2-io"                     % "3.10.2",
     "com.monovore"        %%% "decline-effect"             % "2.4.1",
-    "org.http4s"          %%% "http4s-ember-server"        % "0.23.26",
-    "org.http4s"          %%% "http4s-dsl"                 % "0.23.26",
-    "org.http4s"          %%% "http4s-circe"               % "0.23.26",
+    "org.http4s"          %%% "http4s-ember-server"        % "0.23.27",
+    "org.http4s"          %%% "http4s-dsl"                 % "0.23.27",
+    "org.http4s"          %%% "http4s-circe"               % "0.23.27",
     "org.typelevel"       %%% "log4cats-slf4j"             % "2.7.0",
     "ch.qos.logback"        % "logback-classic"            % "1.5.6",
     "org.tpolecat"        %%% "skunk-core"                 % "0.6.2",
@@ -43,7 +43,7 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
     "com.github.librepdf"   % "openpdf"                    % "2.0.2",
     "com.disneystreaming" %%% "weaver-cats"                % "0.8.4"   % Test,
     "com.disneystreaming" %%% "weaver-scalacheck"          % "0.8.4"   % Test,
-    "org.http4s"          %%% "http4s-ember-client"        % "0.23.26" % Test,
+    "org.http4s"          %%% "http4s-ember-client"        % "0.23.27" % Test,
     "org.typelevel"       %%% "log4cats-noop"              % "2.7.0"   % Test
   )
 )
