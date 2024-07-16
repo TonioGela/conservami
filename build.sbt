@@ -18,7 +18,7 @@ lazy val domain = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure
     libraryDependencies := List(
       "io.circe"          %%% "circe-core"    % "0.14.9",
       "io.circe"          %%% "circe-refined" % "0.14.9",
-      "io.github.arainko" %%% "ducktape"      % "0.2.2"
+      "io.github.arainko" %%% "ducktape"      % "0.2.3"
     )
   )
 
