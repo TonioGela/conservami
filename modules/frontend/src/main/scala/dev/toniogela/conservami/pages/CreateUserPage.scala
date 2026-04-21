@@ -62,9 +62,9 @@ final case class CreateUserPage(
       ).mapN(UserAdd.apply).fold(
         error => (this.copy(error = error.some), Cmd.None),
         userAdd =>
-          id.fold((this, Endpoint.createUser[IO](userAdd)))(uuid =>
-            (this, Endpoint.alterUser(uuid)[IO](userAdd))
-          )
+          id.fold(
+            (this, Endpoint.createUser[IO](userAdd))
+          )(uuid => (this, Endpoint.alterUser(uuid)[IO](userAdd)))
       )
 
     case UserCreated          =>
