@@ -47,9 +47,8 @@ final case class UserListPage(users: List[UserView] = Nil, error: Option[String]
     ),
     td(
       div(s"Numero: ${u.membershipCardNumber}"),
-      div(
-        s"Scadenza: ${u.memberSince.plusYears(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}"
-      )
+      div(s"Scadenza: ${u.memberSince.plusYears(1)
+          .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}")
     )
   )
 

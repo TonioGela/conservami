@@ -70,9 +70,8 @@ object Endpoint {
       if r.status.code === 200 then
         decode[List[UserView]](r.body).fold(
           e =>
-            UserListPage.UsersRetriveFailure(
-              s"Risposta del server non deserializzabile: ${r.body} \n Errore: ${e.toString}"
-            ),
+            UserListPage.UsersRetriveFailure(s"Risposta del server non deserializzabile: ${r
+                .body} \n Errore: ${e.toString}"),
           UserListPage.UsersRetriveSuccess(_)
         )
       else UserListPage.UsersRetriveFailure(s"Errore: $r.status.code"),
@@ -87,9 +86,8 @@ object Endpoint {
         if r.status.code === 200 then
           decode[UserView](r.body).fold(
             e =>
-              IndividualUserPage.UserRetriveFailure(
-                s"Risposta del server non deserializzabile: ${r.body} \n Errore: ${e.toString}"
-              ),
+              IndividualUserPage.UserRetriveFailure(s"Risposta del server non deserializzabile: ${r
+                  .body} \n Errore: ${e.toString}"),
             IndividualUserPage.UserRetriveSuccess(_)
           )
         else IndividualUserPage.UserRetriveFailure(s"Errore: $r.status.code"),
@@ -113,9 +111,8 @@ object Endpoint {
         if r.status.code === 200 then
           decode[List[UserView]](r.body).fold(
             e =>
-              UserListPage.UsersRetriveFailure(
-                s"Risposta del server non deserializzabile: ${r.body} \n Errore: ${e.toString}"
-              ),
+              UserListPage.UsersRetriveFailure(s"Risposta del server non deserializzabile: ${r
+                  .body} \n Errore: ${e.toString}"),
             UserListPage.UsersRetriveSuccess(_)
           )
         else UserListPage.UsersRetriveFailure(s"Errore: $r.status.code"),

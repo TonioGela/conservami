@@ -82,17 +82,14 @@ final case class IndividualUserPage(
           div(`class` := "card mb-3")(
             div(`class` := "card-body")(h4(`class` := "card-title mb-0")("Dati")),
             ul(`class` := "list-group list-group-flush")(
-              li(`class` := "list-group-item")(
-                s"Socio/a dal: ${uv.memberSince.format(DateTimeFormatter.ofPattern("dd/MM/yyy"))}"
-              ),
+              li(`class` := "list-group-item")(s"Socio/a dal: ${uv.memberSince
+                  .format(DateTimeFormatter.ofPattern("dd/MM/yyy"))}"),
               li(`class` := "list-group-item")(s"Donazione: ${uv.donation} €"),
-              li(`class` := "list-group-item")(
-                s"Professione: ${uv.profession.getOrElse("Non specificata")}"
-              ),
+              li(`class` := "list-group-item")(s"Professione: ${uv.profession
+                  .getOrElse("Non specificata")}"),
               li(`class` := "list-group-item")(s"Codice Fiscale: ${uv.fiscalCode.value}"),
-              li(`class` := "list-group-item")(
-                s"Data di Nascita: ${uv.birthDate.format(DateTimeFormatter.ofPattern("dd/MM/yyy"))}"
-              ),
+              li(`class` := "list-group-item")(s"Data di Nascita: ${uv.birthDate
+                  .format(DateTimeFormatter.ofPattern("dd/MM/yyy"))}"),
               li(`class` := "list-group-item")(s"Residenza: ${uv.residence}")
             )
           ),
