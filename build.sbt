@@ -27,7 +27,7 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
   run / fork := true,
   Compile / resourceGenerators += copyJsToAssets(frontend),
   libraryDependencies ++= List(
-    "org.typelevel"       %%% "cats-effect"                % "3.5.4",
+    "org.typelevel"       %%% "cats-effect"                % "3.5.7",
     "co.fs2"              %%% "fs2-core"                   % "3.10.2",
     "co.fs2"              %%% "fs2-io"                     % "3.10.2",
     "com.monovore"        %%% "decline-effect"             % "2.4.1",
