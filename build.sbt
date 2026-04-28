@@ -39,7 +39,7 @@ lazy val backend = project.jvmDocker.in(file("modules/backend")).dependsOn(domai
     "org.tpolecat"        %%% "skunk-core"                 % "0.6.4",
     "com.github.geirolz"   %% "fly4s"                      % "1.0.7",
     "org.flywaydb"          % "flyway-database-postgresql" % "10.17.0",
-    "org.postgresql"        % "postgresql"                 % "42.7.3",
+    "org.postgresql"        % "postgresql"                 % "42.7.11",
     "com.github.librepdf"   % "openpdf"                    % "2.0.2",
     "com.disneystreaming" %%% "weaver-cats"                % "0.8.4"   % Test,
     "com.disneystreaming" %%% "weaver-scalacheck"          % "0.8.4"   % Test,
